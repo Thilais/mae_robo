@@ -55,7 +55,7 @@ def telegram_webhook():
     if text == "/start":
         resposta = "BOAS VINDAS AO: ISSO NÃO É UM BOT, ISSO É UMA MÃE! Sabemos que é um desafio monitorar tudo que nossos filhos assistem, então estou aqui para te ajudar a entender se o conteúdo assistido por seu filho é adequado. Escolha o comando INSTRUÇÕES no Menu"
         
-    elif "instruções" or "INSTRUÇÕES" or "Intruções" in text:
+    elif "instruções" in text or "INSTRUÇÕES" in text or "Intruções" in text:
         resposta = "Para saber se um vídeo assistido por seu filho é adequado, cole aqui a URL do vídeo que deseja analisar. IMPORTANTE: Eu análiso vídeos que têm LEGENDA EM PORTUGUÊS no youtube, então se retornar algum erro pode ser isso. Como o que avaliado é a transcrição, há uma limitação quanto as imagens que aparecem nos vídeos. Se algo der errado e você quiser deixar um feedback escreva a palavra FEEDBACK + o que precisa ser melhorado (na mesma mensagem)"
         
     elif text == "/command1":
@@ -95,7 +95,7 @@ def telegram_webhook():
     
     elif text == "/command3":
         resposta = "Obrigada e volte sempre <3"
-    elif "FEEDBACK" or "Feedback" or "feedback" or "melhoria" in text:
+    elif "FEEDBACK" in text or "Feedback" in text or "feedback" in text or "melhoria" in text:
         resposta = "Poxa, nem sempre conseguirei ajudar, sabe como é a sobrecarga materna né. Mas obrigada pela pontuação, buscarei melhorar."
     else:
         resposta = "Não entendi! Nem sempre consigo pensar em tudo, como uma mãe faria. Então, use os comandos disponíveis no chat para que eu funcione melhor."
@@ -116,4 +116,6 @@ def telegram_webhook():
 
     print("Atualizações concluídas")
 
-    return "ok"
+    return "ok" 
+
+
