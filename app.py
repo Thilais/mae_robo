@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request
+from flask import Flask, render_template, request
 import openai
 from youtube_transcript_api import YouTubeTranscriptApi
 import gspread
@@ -127,4 +127,4 @@ def telegram_webhook():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5000, threaded=True, timeout=120)
+
