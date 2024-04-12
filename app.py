@@ -88,7 +88,7 @@ def telegram_webhook():
                                 {"role": "user", "content": pergunta}
                                 ],
                                 model="gpt-3.5-turbo",  # Modelo da OpenAI
-                                api_key=OPENAI_API_KEY
+                                api_key=OPENAI_API_KEY,
                                 timeout=35
                             )
                             resposta = chat.choices[0].message.content.strip()
