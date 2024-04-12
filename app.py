@@ -14,7 +14,7 @@ import time
 from dotenv import load_dotenv
 
 app = Flask(__name__)
-app.config['TIMEOUT'] = 60
+
 
 
 load_dotenv()
