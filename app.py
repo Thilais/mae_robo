@@ -18,14 +18,14 @@ app = Flask(__name__)
 load_dotenv()
 
 BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
-SENHA_SHEETS = os.environ["SENHA_SHEETS"]
+#SENHA_SHEETS = os.environ["SENHA_SHEETS"]
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
-arquivo_credenciais = SENHA_SHEETS #nome do arquivo do token. é preciso subir ele antes nos arquivos do colab
-conta = ServiceAccountCredentials.from_json_keyfile_name(arquivo_credenciais)
-api = gspread.authorize(conta)
-planilha = api.open_by_key ("1nQYNS9BXqDLY9Zykm02OI-KJ5YDv15wy7SkjPsX172Y")
-sheet = planilha.worksheet("Updates")
+#arquivo_credenciais = SENHA_SHEETS #nome do arquivo do token. é preciso subir ele antes nos arquivos do colab
+#conta = ServiceAccountCredentials.from_json_keyfile_name(arquivo_credenciais)
+#api = gspread.authorize(conta)
+#planilha = api.open_by_key ("1nQYNS9BXqDLY9Zykm02OI-KJ5YDv15wy7SkjPsX172Y")
+#sheet = planilha.worksheet("Updates")
 
 
 
@@ -106,12 +106,12 @@ def telegram_webhook():
 
     # Guarda o ID do último update processado, para que possamos ignorar os já
     # processados no `if` acima
-    ultimo_id_update = update["update_id"]            
-    nome = update["message"]["from"]["first_name"]            
-    mensagem = update["message"]["text"]            
-    momento_atual = datetime.now()            
-    momento_atual_formatado = momento_atual.strftime("%Y-%m-%d %H:%M:%S")            
-    sheet.append_row([ultimo_id_update, nome, mensagem, resposta, momento_atual_formatado])
+    #ultimo_id_update = update["update_id"]            
+    #nome = update["message"]["from"]["first_name"]            
+    #mensagem = update["message"]["text"]            
+    #momento_atual = datetime.now()            
+    #momento_atual_formatado = momento_atual.strftime("%Y-%m-%d %H:%M:%S")            
+    #sheet.append_row([ultimo_id_update, nome, mensagem, resposta, momento_atual_formatado])
 
     print("Atualizações concluídas")
 
