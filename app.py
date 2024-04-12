@@ -44,13 +44,14 @@ def extrair_id_video(link):
 
 @app.route("/telegram", methods=["POST"])
 def telegram_webhook():
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates?offset={ultimo_id_processado + 1}"
+    #url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates?offset={ultimo_id_processado + 1}"
+    
     resposta = requests.get(url)
     dados = resposta.json()
 
     for update in dados["result"]:
         if update["update_id"] > ultimo_id_processado:
-            ultimo_id_processado = update["update_id"]
+            #ultimo_id_processado = update["update_id"]
             first_name = update["message"]["from"]["first_name"]
             text = update["message"]["text"]
             chat_id = update["message"]["chat"]["id"]
