@@ -14,6 +14,8 @@ import time
 from dotenv import load_dotenv
 
 app = Flask(__name__)
+app.config['TIMEOUT'] = 60
+
 
 load_dotenv()
 
@@ -27,7 +29,6 @@ api = gspread.authorize(conta)
 planilha = api.open_by_key ("1nQYNS9BXqDLY9Zykm02OI-KJ5YDv15wy7SkjPsX172Y")
 sheet = planilha.worksheet("Updates")
 
-ultimo_id_processado=999444365
 
 
 import re
@@ -119,3 +120,5 @@ def telegram_webhook():
     return "ok" 
 
 
+if __name__ == "__main__":
+    app.run()
