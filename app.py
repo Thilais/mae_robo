@@ -1,5 +1,4 @@
 import os
-import requests
 from flask import Flask, request
 import openai
 from youtube_transcript_api import YouTubeTranscriptApi
@@ -12,6 +11,7 @@ import requests
 from datetime import datetime
 import time
 from dotenv import load_dotenv
+from requests.exceptions import Timeout 
 
 app = Flask(__name__)
 
@@ -20,7 +20,6 @@ app = Flask(__name__)
 load_dotenv()
 
 BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
-#SENHA_SHEETS = os.environ["SENHA_SHEETS"]
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
 arquivo_credenciais = "fresh-electron-418019-797333eb9d13.json"  #nome do arquivo do token. é preciso subir ele antes nos arquivos do colab
@@ -41,7 +40,13 @@ def extrair_id_video(link):
     else:
         return None
 
-
+@app.route('/', methods=['GET', 'HEAD'])
+def index():
+    if request.method == 'HEAD':
+        return '', 200  # Retorna uma resposta vazia para solicitações HEAD
+    else:
+        # Lógica normal para solicitações GET
+        return render_template('index.html')
 
 @app.route("/telegram", methods=["POST"])
 def telegram_webhook():
@@ -84,6 +89,7 @@ def telegram_webhook():
                                 ],
                                 model="gpt-3.5-turbo",  # Modelo da OpenAI
                                 api_key=OPENAI_API_KEY
+                                timeout=35
                             )
                             resposta = chat.choices[0].message.content.strip()
                         else:
@@ -121,4 +127,4 @@ def telegram_webhook():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5000, threaded=True, timeout=220)
+    app.run(debug=True, host='0.0.0.0', port=5000, threaded=True, timeout=120)
