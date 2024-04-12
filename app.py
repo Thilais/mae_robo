@@ -11,8 +11,12 @@ import re
 import requests
 from datetime import datetime
 import time
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+
+load_dotenv()
+
 BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 
 @app.route("/")
