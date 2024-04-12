@@ -113,12 +113,12 @@ def telegram_webhook():
 
     # Guarda o ID do último update processado, para que possamos ignorar os já
     # processados no `if` acima
-    #ultimo_id_update = update["update_id"]            
-    #nome = update["message"]["from"]["first_name"]            
-    #mensagem = update["message"]["text"]            
-    #momento_atual = datetime.now()            
-    #momento_atual_formatado = momento_atual.strftime("%Y-%m-%d %H:%M:%S")            
-    #sheet.append_row([ultimo_id_update, nome, mensagem, resposta, momento_atual_formatado])
+            ultimo_id_update = update["update_id"]            
+            nome = update["message"]["from"]["first_name"]            
+            mensagem = update["message"]["text"]            
+            momento_atual = datetime.now()            
+            momento_atual_formatado = momento_atual.strftime("%Y-%m-%d %H:%M:%S")            
+            sheet.append_row([ultimo_id_update, nome, mensagem, resposta, momento_atual_formatado])
 
     print("Atualizações concluídas")
 
