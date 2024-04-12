@@ -21,13 +21,13 @@ BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 #SENHA_SHEETS = os.environ["SENHA_SHEETS"]
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
-#arquivo_credenciais = "fresh-electron-418019-797333eb9d13.json"  #nome do arquivo do token. é preciso subir ele antes nos arquivos do colab
-#conta = ServiceAccountCredentials.from_json_keyfile_name(arquivo_credenciais)
-#api = gspread.authorize(conta)
-#planilha = api.open_by_key ("1nQYNS9BXqDLY9Zykm02OI-KJ5YDv15wy7SkjPsX172Y")
-#sheet = planilha.worksheet("Updates")
+arquivo_credenciais = "fresh-electron-418019-797333eb9d13.json"  #nome do arquivo do token. é preciso subir ele antes nos arquivos do colab
+conta = ServiceAccountCredentials.from_json_keyfile_name(arquivo_credenciais)
+api = gspread.authorize(conta)
+planilha = api.open_by_key ("1nQYNS9BXqDLY9Zykm02OI-KJ5YDv15wy7SkjPsX172Y")
+sheet = planilha.worksheet("Updates")
 
-
+ultimo_id_processado=999444365
 
 
 import re
@@ -44,8 +44,7 @@ def extrair_id_video(link):
 
 @app.route("/telegram", methods=["POST"])
 def telegram_webhook():
-    ultimo_id_processado=999444326
-    url = f"https://api.telegram.org/bot{token}/getUpdates?offset={ultimo_id_processado + 1}"
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates?offset={ultimo_id_processado + 1}"
     resposta = requests.get(url)
     dados = resposta.json()
 
