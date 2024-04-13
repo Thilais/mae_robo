@@ -40,6 +40,7 @@ def extrair_id_video(link):
     else:
         return None
 
+updates_processados = set()
 
 @app.route("/telegram", methods=["POST"])
 def telegram_webhook():
@@ -58,6 +59,7 @@ def telegram_webhook():
         if ultimo_id_processado <= ultimo_id_update_registrado:
             logging.info(f"Mensagem duplicada recebida e ignorada. ID: {ultimo_id_processado}")
             return "ok", 200
+        updates_processados.add(ultimo_id_processado)
         
         if text == "/start":
             resposta = "BOAS VINDAS AO: ISSO NÃO É UM BOT, ISSO É UMA MÃE! Sabemos que é um desafio monitorar tudo que nossos filhos assistem, então estou aqui para te ajudar a entender se o conteúdo assistido por seu filho é adequado. Escolha o comando INSTRUÇÕES no Menu"
