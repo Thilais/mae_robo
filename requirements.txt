@@ -1,6 +1,6 @@
-google-auth==latest_version
-google-auth-oauthlib==latest_version
-google-auth-httplib2==latest_version
+google-auth==2.29.0
+google-auth-oauthlib==0.4.5
+google-auth-httplib2==0.1.0
 Flask
 openai
 python-dotenv
