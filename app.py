@@ -108,7 +108,7 @@ def telegram_webhook():
                 else:
                     resposta = "Não foi possível extrair o ID do vídeo. Por favor, verifique o formato da URL."
                 processing_youtube_link = False 
-                
+
         elif text == "/command3":
             resposta = "Obrigada e volte sempre <3"
         elif "FEEDBACK" in text or "Feedback" in text or "feedback" in text or "melhoria" in text:
@@ -128,9 +128,14 @@ def telegram_webhook():
         nome = update["message"]["from"]["first_name"]            
         mensagem = update["message"]["text"]            
         momento_atual = datetime.now()            
-        momento_atual_formatado = momento_atual.strftime("%Y-%m-%d %H:%M:%S")            
+        momento_atual_formatado = momento_atual.strftime("%Y-%m-%d %H:%M:%S")
+        logging.info(f"Número de linhas na planilha: {sheet.row_count}")            
         sheet.append_row([ultimo_id_update, nome, mensagem, resposta, momento_atual_formatado])
 
+
+        # Verifica o número de linhas na planilha após a adição
+        logging.info(f"Número de linhas na planilha após a adição: {sheet.row_count}")
+        
         logging.info(f"Resposta enviada: {resposta}")
         return "ok", 200
 
