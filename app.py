@@ -53,7 +53,7 @@ def telegram_webhook():
 
     try:
         # Busca o último ID processado no Google Sheets
-        ultimo_id_update_registrado = int(sheet.cell(2, 1).value) if sheet.cell(2, 1).value else 0
+        ultimo_id_update_registrado = int(sheet.cell(sheet.row_count, 1).value) if sheet.cell(sheet.row_count, 1).value else 0
 
         # Se o ID da mensagem atual for menor ou igual ao último ID processado, ignore-a
         if ultimo_id_processado <= ultimo_id_update_registrado:
@@ -74,34 +74,41 @@ def telegram_webhook():
             resposta = "Para saber se um vídeo assistido por seu filho é adequado, cole aqui a URL do vídeo que deseja analisar. IMPORTANTE: Eu análiso vídeos que têm LEGENDA EM PORTUGUÊS no youtube, então se retornar algum erro pode ser isso. Como o que avaliado é a transcrição, há uma limitação quanto as imagens que aparecem nos vídeos. Se algo der errado e você quiser deixar um feedback escreva a palavra FEEDBACK + o que precisa ser melhorado (na mesma mensagem)"
     
         elif "youtube.com" in text or "youtu.be" in text:
-            id_video = extrair_id_video(text)
-            if id_video:
-                try:
-                    transcricoes = YouTubeTranscriptApi.get_transcript(id_video, languages=['pt'])
-                    texto = ""
-                    for transcricao in transcricoes:
-                        if 'text' in transcricao:
-                            texto += transcricao['text'] + " "  # Adiciona o texto do trecho atual ao texto completo
-                            numero_caracteres = len(texto)
-                        
-                            if numero_caracteres < 45000:
-                                pergunta = f"Considere a seguinte transcrição de vídeo: {texto}\n\nMe diga sobre o que é o vídeo numa frase curta, e Considerando as classificações indicativas de conteúdo (DJCTQ Brasil), que avaliam os conteúdos como incluem L, 10, 12, 14, 16 e 18, classifique esse conteúdo, e justifique.Além da classificação DJCTQ, você pode adicionar, por favor, se o conteúdo é adequado para crianças? ALÉM DA CLASSIFICAÇÃO DJCTQ, entenda que mesmo conteúdos L (livre) podem ser desinteressantes para crianças. Então, quero que você também faça essa reflexão se o conteúdo é se algo que pode ser do interesse de crianças, se o conteúdo é infantil, e/ou de compreensão de uma criança."
-                                chat = openai.ChatCompletion.create(
-                                    messages=[
-                                    {"role": "user", "content": pergunta}
-                                    ],
-                                    model="gpt-3.5-turbo",  # Modelo da OpenAI
-                                    api_key=OPENAI_API_KEY,
-                                )
-                                resposta = chat.choices[0].message.content.strip()
-                            else:
-                                resposta = "Desculpe, este vídeo é muito longo e ultrapassa meus limites de análise."
-                except Exception as e:
-                    print("Erro ao analisar o vídeo:", e)
-                    resposta = "Ocorreu um erro ao analisar o vídeo. Certifique-se que o vídeo tem LEGENDAS em PORTUGUES."
+            if processing_youtube_link:
+                logging.info("Link do YouTube já está sendo processado. Ignorando novo link.")
+                resposta = "Desculpe, estou processando um link do YouTube agora. Por favor, aguarde."
+
             else:
-                resposta = "Não foi possível extrair o ID do vídeo. Por favor, verifique o formato da URL."
-    
+                processing_youtube_link = True  # Define a flag para True
+                id_video = extrair_id_video(text)
+                if id_video:
+                    try:
+                        transcricoes = YouTubeTranscriptApi.get_transcript(id_video, languages=['pt'])
+                        texto = ""
+                        for transcricao in transcricoes:
+                            if 'text' in transcricao:
+                                texto += transcricao['text'] + " "  # Adiciona o texto do trecho atual ao texto completo
+                                numero_caracteres = len(texto)
+                        
+                                if numero_caracteres < 45000:
+                                    pergunta = f"Considere a seguinte transcrição de vídeo: {texto}\n\nMe diga sobre o que é o vídeo numa frase curta, e Considerando as classificações indicativas de conteúdo (DJCTQ Brasil), que avaliam os conteúdos como incluem L, 10, 12, 14, 16 e 18, classifique esse conteúdo, e justifique.Além da classificação DJCTQ, você pode adicionar, por favor, se o conteúdo é adequado para crianças? ALÉM DA CLASSIFICAÇÃO DJCTQ, entenda que mesmo conteúdos L (livre) podem ser desinteressantes para crianças. Então, quero que você também faça essa reflexão se o conteúdo é se algo que pode ser do interesse de crianças, se o conteúdo é infantil, e/ou de compreensão de uma criança."
+                                    chat = openai.ChatCompletion.create(
+                                        messages=[
+                                        {"role": "user", "content": pergunta}
+                                        ],
+                                        model="gpt-3.5-turbo",  # Modelo da OpenAI
+                                        api_key=OPENAI_API_KEY,
+                                    )
+                                    resposta = chat.choices[0].message.content.strip()
+                                else:
+                                    resposta = "Desculpe, este vídeo é muito longo e ultrapassa meus limites de análise."
+                    except Exception as e:
+                        print("Erro ao analisar o vídeo:", e)
+                        resposta = "Ocorreu um erro ao analisar o vídeo. Certifique-se que o vídeo tem LEGENDAS em PORTUGUES."
+                else:
+                    resposta = "Não foi possível extrair o ID do vídeo. Por favor, verifique o formato da URL."
+                processing_youtube_link = False 
+                
         elif text == "/command3":
             resposta = "Obrigada e volte sempre <3"
         elif "FEEDBACK" in text or "Feedback" in text or "feedback" in text or "melhoria" in text:
