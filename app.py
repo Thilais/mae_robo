@@ -28,7 +28,7 @@ arquivo_credenciais = "fresh-electron-418019-797333eb9d13.json"
 conta = ServiceAccountCredentials.from_json_keyfile_name(arquivo_credenciais)
 api = gspread.authorize(conta)
 planilha = api.open_by_key("1nQYNS9BXqDLY9Zykm02OI-KJ5YDv15wy7SkjPsX172Y")
-sheet = planilha.worksheet("Updates")
+sheet = planilha.worksheet("nova")
 
 
 def extrair_id_video(link):
