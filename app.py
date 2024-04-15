@@ -154,7 +154,8 @@ def telegram_webhook():
                 logging.error("Tentativa de adicionar além do limite de linhas da planilha.")
                 return "error", 500
             
-            sheet.append_row([ultimo_id_processado, first_name, text, resposta, datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+            # Insere uma nova linha na posição após a última linha preenchida
+            sheet.insert_row([ultimo_id_processado, first_name, text, resposta, momento_atual_formatado], current_row_count + 1)
         
         except Exception as e:
             logging.error(f"Erro ao adicionar informações à planilha: {str(e)}")
