@@ -127,11 +127,14 @@ def telegram_webhook():
         logging.info(f"Resposta a ser enviada: {resposta}") 
         url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
         mensagem = {"chat_id": chat_id, "text": resposta}
-        requests.post(url, json=mensagem)
+        response = requests.post(url, json=mensagem)
 
-        logging.info(f"Resposta do Telegram API: {response.json()}") # Log para verificar a resposta da API do Telegram
-
-
+        # Verifica se response é None antes de acessar .json()
+        if response is not None:
+            logging.info(f"Resposta do Telegram API: {response.json()}")
+        else:
+            logging.warning("Nenhuma resposta recebida da API do Telegram")
+            
         # Guarda o ID do último update processado, para que possamos ignorar os já
         # processados no `if` acima
         ultimo_id_update = update["update_id"]            
