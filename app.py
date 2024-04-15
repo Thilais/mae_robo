@@ -47,6 +47,7 @@ def telegram_webhook():
     
     update = request.json
     ultimo_id_processado = int(update["update_id"])
+    logging.info(f"ID da mensagem recebida: {ultimo_id_processado}")  # Log para verificar o ID da mensagem
     chat_id = update["message"]["chat"]["id"]
     text = update["message"]["text"]
     first_name = update["message"]["from"]["first_name"]
@@ -62,15 +63,18 @@ def telegram_webhook():
         updates_processados.add(ultimo_id_processado)
         
         if text == "/start":
+            logging.info("Recebido /start")
             resposta = "BOAS VINDAS AO: ISSO NÃO É UM BOT, ISSO É UMA MÃE! Sabemos que é um desafio monitorar tudo que nossos filhos assistem, então estou aqui para te ajudar a entender se o conteúdo assistido por seu filho é adequado. Escolha o comando INSTRUÇÕES no Menu"
         
         elif "instruções" in text or "INSTRUÇÕES" in text or "Intruções" in text:
             resposta = "Para saber se um vídeo assistido por seu filho é adequado, cole aqui a URL do vídeo que deseja analisar. IMPORTANTE: Eu análiso vídeos que têm LEGENDA EM PORTUGUÊS no youtube, então se retornar algum erro pode ser isso. Como o que avaliado é a transcrição, há uma limitação quanto as imagens que aparecem nos vídeos. Se algo der errado e você quiser deixar um feedback escreva a palavra FEEDBACK + o que precisa ser melhorado (na mesma mensagem)"
         
         elif text == "/command1":
+            logging.info("Recebido SABER MAIS /command1")
             resposta = "Que legal que você quer saber sobre funcionamento \o/. Esse bot foi criado por uma mãe, que na locura de volta a rotina pós-filho decidiu estudar algo novo. A base desse bot está em Python, toda vez que você manda uma mensagem, meu código lê o seu comando e te responde. Quando essa mensagem contem um link de vídeo no youtube, o meu código chama uma API de transcrição para acessar o conteúdo do vídeo e depois analisa com base em parâmetros que passei, pela API da OPENAI."
 
         elif text == "/command2":
+            logging.info("Recebido INSTRUÇÕES /command2")
             resposta = "Para saber se um vídeo assistido por seu filho é adequado, cole aqui a URL do vídeo que deseja analisar. IMPORTANTE: Eu análiso vídeos que têm LEGENDA EM PORTUGUÊS no youtube, então se retornar algum erro pode ser isso. Como o que avaliado é a transcrição, há uma limitação quanto as imagens que aparecem nos vídeos. Se algo der errado e você quiser deixar um feedback escreva a palavra FEEDBACK + o que precisa ser melhorado (na mesma mensagem)"
     
         elif "youtube.com" in text or "youtu.be" in text:
@@ -116,10 +120,12 @@ def telegram_webhook():
         else:
             resposta = "Não entendi! Nem sempre consigo pensar em tudo, como uma mãe faria. Então, use os comandos disponíveis no chat para que eu funcione melhor."
 
-    
+        logging.info(f"Resposta a ser enviada: {resposta}") 
         url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
         mensagem = {"chat_id": chat_id, "text": resposta}
         requests.post(url, json=mensagem)
+
+        logging.info(f"Resposta do Telegram API: {response.json()}") # Log para verificar a resposta da API do Telegram
 
 
         # Guarda o ID do último update processado, para que possamos ignorar os já
@@ -135,6 +141,9 @@ def telegram_webhook():
     except Exception as e:
         logging.error(f"Erro ao processar a mensagem: {str(e)}")
         return "ok", 200
+    
+    return "ok", 200  # Movido para fora do bloco try-except
+
 
 # Inicia o servidor Flask se estiver no escopo principal
 if __name__ == "__main__":
