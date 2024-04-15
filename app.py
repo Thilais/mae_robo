@@ -52,6 +52,8 @@ def telegram_webhook():
     text = update["message"]["text"]
     first_name = update["message"]["from"]["first_name"]
 
+    response = None  # Inicializa a variável response
+
     try:
         # Busca o último ID processado no Google Sheets
         ultimo_id_update_registrado = int(sheet.cell(sheet.row_count, 1).value) if sheet.cell(sheet.row_count, 1).value else 0
@@ -140,9 +142,12 @@ def telegram_webhook():
 
     except Exception as e:
         logging.error(f"Erro ao processar a mensagem: {str(e)}")
-        return "ok", 200
+        if response is None:
+            return "ok", 200
+        else:
+            return response.text, response.status_code
     
-    return "ok", 200  # Movido para fora do bloco try-except
+    return "ok", 200
 
 
 # Inicia o servidor Flask se estiver no escopo principal
