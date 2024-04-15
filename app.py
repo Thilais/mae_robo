@@ -89,11 +89,13 @@ def telegram_webhook():
             if processing_youtube_link:
                 logging.info("Link do YouTube já está sendo processado. Ignorando novo link.")
                 resposta = "Desculpe, estou processando um link do YouTube agora. Por favor, aguarde."
-
-            else:
-                processing_youtube_link = True  # Define a flag para True
-                id_video = extrair_id_video(text)
-                if id_video:
+                mensagem = {"chat_id": chat_id, "text": resposta}
+                response = requests.post(url, json=mensagem)
+                return "ok", 200
+            
+            processing_youtube_link = True
+            id_video = extrair_id_video(text)
+            if id_video:
                     try:
                         transcricoes = YouTubeTranscriptApi.get_transcript(id_video, languages=['pt'])
                         texto = ""
@@ -117,9 +119,9 @@ def telegram_webhook():
                     except Exception as e:
                         print("Erro ao analisar o vídeo:", e)
                         resposta = "Ocorreu um erro ao analisar o vídeo. Certifique-se que o vídeo tem LEGENDAS em PORTUGUES."
-                else:
+            else:
                     resposta = "Não foi possível extrair o ID do vídeo. Por favor, verifique o formato da URL."
-                processing_youtube_link = False 
+            processing_youtube_link = False 
 
         elif text == "/command3":
             resposta = "Obrigada e volte sempre <3"
