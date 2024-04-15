@@ -52,6 +52,8 @@ def telegram_webhook():
     text = update["message"]["text"]
     first_name = update["message"]["from"]["first_name"]
 
+    processing_youtube_link = False  # Inicializa a variável processing_youtube_link como False
+
     response = None  # Inicializa a variável response
 
     try:
