@@ -57,6 +57,10 @@ def telegram_webhook():
     response = None  # Inicializa a variável response
 
     try:
+        # Verifica o número atual de linhas na planilha
+        current_row_count = len(sheet.get_all_values())
+        logging.info(f"Número de linhas atual na planilha: {current_row_count}")
+
         # Busca o último ID processado no Google Sheets
         ultimo_id_update_registrado = int(sheet.cell(sheet.row_count, 1).value) if sheet.cell(sheet.row_count, 1).value else 0
 
@@ -134,7 +138,7 @@ def telegram_webhook():
             logging.info(f"Resposta do Telegram API: {response.json()}")
         else:
             logging.warning("Nenhuma resposta recebida da API do Telegram")
-            
+
         # Guarda o ID do último update processado, para que possamos ignorar os já
         # processados no `if` acima
         ultimo_id_update = update["update_id"]            
@@ -142,7 +146,18 @@ def telegram_webhook():
         mensagem = update["message"]["text"]            
         momento_atual = datetime.now()            
         momento_atual_formatado = momento_atual.strftime("%Y-%m-%d %H:%M:%S")      
-        sheet.append_row([ultimo_id_update, nome, mensagem, resposta, momento_atual_formatado])
+        
+        # Adiciona informações à planilha
+        try:
+            # Verifica se o número de linhas é menor que o limite máximo
+            if current_row_count >= 1784:
+                logging.error("Tentativa de adicionar além do limite de linhas da planilha.")
+                return "error", 500
+            
+            sheet.append_row([ultimo_id_processado, first_name, text, resposta, datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+        
+        except Exception as e:
+            logging.error(f"Erro ao adicionar informações à planilha: {str(e)}")
 
 
     except Exception as e:
